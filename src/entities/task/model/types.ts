@@ -17,6 +17,8 @@ export const taskSchema = z.object({
 
 export type Task = z.infer<typeof taskSchema>;
 
-export const createTaskSchema = taskSchema.omit({ id: true });
+export const createTaskSchema = taskSchema
+  .omit({ id: true })
+  .extend({ priority: z.enum(["low", "medium", "high"]) });
 
 export type CreateTaskDto = z.infer<typeof createTaskSchema>;
