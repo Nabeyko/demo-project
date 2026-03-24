@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { WithJotai } from "./with-jotai";
 import { WithQuery } from "./with-query";
+import { WithTheme } from "./with-theme";
 
 interface AppProvidersProps {
   children: ReactNode;
@@ -8,6 +9,10 @@ interface AppProvidersProps {
 
 export const AppProviders = ({ children }: AppProvidersProps) => (
   <WithJotai>
-    <WithQuery>{children}</WithQuery>
+    <WithQuery>
+      <WithTheme>
+        {children}
+      </WithTheme>
+    </WithQuery>
   </WithJotai>
 );

@@ -12,6 +12,5 @@ export const useTasks = () =>
   useQuery({
     queryKey: taskKeys.all,
     queryFn: taskApi.getAll,
-    // Parse through Zod schema — strips userId, fills priority default "medium"
     select: (data): Task[] => data.map((item) => taskSchema.parse(item)),
   });

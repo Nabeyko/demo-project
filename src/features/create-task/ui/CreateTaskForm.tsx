@@ -1,6 +1,14 @@
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@/shared/ui";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  ToggleButtonGroup,
+  ToggleButton,
+  Paper,
+} from "@mui/material";
 import { createTaskSchema } from "@/entities/task";
 import type { CreateTaskDto } from "@/entities/task";
 import { useCreateTask } from "../model/use-create-task";
@@ -39,52 +47,85 @@ export const CreateTaskForm = () => {
   };
 
   return (
-    <form
+    <Paper
+      component="form"
       onSubmit={handleSubmit(onSubmit)}
-      className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
+      elevation={0}
+      sx={{
+        p: 4,
+        borderRadius: 1.5,
+        border: "1px solid",
+        borderColor: "divider",
+      }}
     >
-      <h2 className="mb-5 text-base font-semibold text-gray-900">
+      <Typography variant="subtitle1" sx={{ mb: 2.5, fontWeight: 600 }}>
         New Task
-      </h2>
+      </Typography>
 
-      <div className="flex flex-col gap-4">
-        <Input
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+        <TextField
           {...register("title")}
           label="Title"
           placeholder="What needs to be done?"
-          error={errors.title?.message}
+          fullWidth
+          error={!!errors.title}
+          helperText={errors.title?.message}
           autoComplete="off"
+          size="small"
         />
 
-        <div className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-gray-700">Priority</span>
+        <Box>
+          <Typography sx={{ mb: 1, fontWeight: 500 }}>Priority</Typography>
           <Controller
             name="priority"
             control={control}
             render={({ field }) => (
-              <div className="flex gap-2">
+              <ToggleButtonGroup
+                value={field.value}
+                exclusive
+                onChange={(_, newValue) => newValue && field.onChange(newValue)}
+                sx={{
+                  bgcolor: "#f3f4f6", 
+                  p: "4px", 
+                  borderRadius: "10px",
+                  height: "40px",
+                  border: "none",
+                  "& .MuiToggleButton-root": {
+                    border: "none",
+                    borderRadius: "8px !important",
+                    textTransform: "none",
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    color: "#6b7280",
+                    "&.Mui-selected": {
+                      bgcolor: "white",
+                      color: "#2563eb",
+                      boxShadow: "0 1px 2px rgba(0,0,0,0.05)" 
+                    }
+                  }
+                }}
+              >
                 {PRIORITY_OPTIONS.map(({ value, label }) => (
-                  <Button
-                    key={value}
-                    type="button"
-                    size="sm"
-                    variant={field.value === value ? "primary" : "secondary"}
-                    onClick={() => field.onChange(value)}
-                  >
+                  <ToggleButton key={value} value={value} sx={{ px: 2 }}>
                     {label}
-                  </Button>
+                  </ToggleButton>
                 ))}
-              </div>
+              </ToggleButtonGroup>
             )}
           />
-        </div>
+        </Box>
 
-        <div className="flex justify-end pt-1">
-          <Button type="submit" isLoading={isPending}>
-            Add Task
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isPending}
+            disableElevation
+          >
+            {isPending ? "Adding..." : "Add Task"}
           </Button>
-        </div>
-      </div>
-    </form>
+        </Box>
+      </Box>
+    </Paper>
   );
 };

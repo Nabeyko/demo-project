@@ -1,3 +1,11 @@
+import {
+  Box,
+  Container,
+  Typography,
+  AppBar,
+  Toolbar,
+  Stack,
+} from "@mui/material";
 import { AppProviders } from "@/app/providers";
 import { CreateTaskForm } from "@/features/create-task";
 import { TaskFilters } from "@/features/filter-tasks";
@@ -6,39 +14,59 @@ import { TaskList } from "@/widgets/task-list";
 export const App = () => {
   return (
     <AppProviders>
-      <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <header className="border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
-          <div className="mx-auto max-w-3xl">
-            <h1 className="text-xl font-bold text-gray-900">
-              Task Management Dashboard
-            </h1>
-            <p className="mt-0.5 text-sm text-gray-500">
-              Powered by JSONPlaceholder
-            </p>
-          </div>
-        </header>
+      <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+        <AppBar
+          position="static"
+          color="inherit"
+          elevation={0}
+          sx={{
+            borderBottom: "1px solid",
+            borderColor: "divider",
+            bgcolor: "background.paper",
+          }}
+        >
+          <Container maxWidth="md">
+            <Toolbar disableGutters sx={{ py: 2, display: "block" }}>
+              <Typography
+                variant="h5"
+                component="h1"
+                sx={{ fontWeight: 700, color: "text.primary" }}
+              >
+                Task Management Dashboard
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
+                Powered by JSONPlaceholder
+              </Typography>
+            </Toolbar>
+          </Container>
+        </AppBar>
 
-        {/* Main */}
-        <main className="mx-auto max-w-3xl px-4 py-8">
-          <div className="flex flex-col gap-6">
-            {/* Create form */}
+        <Container maxWidth="md" sx={{ py: 6 }}>
+          <Stack spacing={4}>
             <CreateTaskForm />
 
-            {/* Task list section */}
-            <section>
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-base font-semibold text-gray-900">
+            <Box component="section">
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{ mb: 3 }}
+              >
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   Tasks
-                </h2>
+                </Typography>
                 <TaskFilters />
-              </div>
+              </Stack>
 
               <TaskList />
-            </section>
-          </div>
-        </main>
-      </div>
+            </Box>
+          </Stack>
+        </Container>
+      </Box>
     </AppProviders>
   );
 };

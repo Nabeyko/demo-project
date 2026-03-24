@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useAtomValue } from "jotai";
+import { Box, Typography, Alert, AlertTitle, Stack } from "@mui/material";
 import { useTasks, TaskCard } from "@/entities/task";
 import { filterAtom } from "@/features/filter-tasks";
 import { TaskSkeleton } from "./TaskSkeleton";
@@ -32,31 +33,41 @@ export const TaskList = () => {
 
   if (isError) {
     return (
-      <div
-        role="alert"
-        className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600"
+      <Alert
+        severity="error"
+        variant="outlined"
+        sx={{ borderRadius: "12px", bgcolor: "#fef2f2" }}
       >
-        Failed to load tasks:{" "}
-        <span className="font-medium">{error?.message ?? "Unknown error"}</span>
-      </div>
+        <AlertTitle>Failed to load tasks</AlertTitle>
+        {error?.message ?? "Unknown error"}
+      </Alert>
     );
   }
 
   if (filteredTasks.length === 0) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-10 text-center text-sm text-gray-400">
-        No tasks found for the <strong>{filter}</strong> filter.
-      </div>
+      <Box
+        sx={{
+          p: 8,
+          textAlign: "center",
+          borderRadius: "12px",
+          border: "1px dashed",
+          borderColor: "divider",
+          bgcolor: "background.default",
+        }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          No tasks found for the current filter.
+        </Typography>
+      </Box>
     );
   }
 
   return (
-    <ul className="flex flex-col gap-3">
+    <Stack spacing={2}>
       {filteredTasks.map((task) => (
-        <li key={task.id}>
-          <TaskCard task={task} />
-        </li>
+        <TaskCard key={task.id} task={task} />
       ))}
-    </ul>
+    </Stack>
   );
 };

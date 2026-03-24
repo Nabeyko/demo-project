@@ -1,3 +1,4 @@
+import { Box, Typography, Card, Stack } from "@mui/material";
 import type { Task, Priority } from "../model/types";
 import { useToggleTaskStatus } from "../api/task.queries";
 
@@ -7,97 +8,137 @@ interface TaskCardProps {
 
 const priorityConfig: Record<
   Priority,
-  { label: string; badgeClass: string; dotClass: string }
+  { label: string; bg: string; text: string; dot: string }
 > = {
   low: {
     label: "Low",
-    badgeClass: "bg-emerald-100 text-emerald-700",
-    dotClass: "bg-emerald-400",
+    bg: "#ecfdf5",
+    text: "#047857",
+    dot: "#34d399",
   },
   medium: {
     label: "Medium",
-    badgeClass: "bg-amber-100 text-amber-700",
-    dotClass: "bg-amber-400",
+    bg: "#fffbeb",
+    text: "#b45309",
+    dot: "#fbbf24",
   },
   high: {
     label: "High",
-    badgeClass: "bg-red-100 text-red-700",
-    dotClass: "bg-red-400",
+    bg: "#fef2f2",
+    text: "#b91c1c",
+    dot: "#f87171",
   },
 };
 
 export const TaskCard = ({ task }: TaskCardProps) => {
-  const { label, badgeClass, dotClass } = priorityConfig[task.priority];
+  const { label, bg, text, dot } = priorityConfig[task.priority];
   const { mutate: toggleStatus, isPending } = useToggleTaskStatus();
 
   return (
-    <article
-      className={[
-        "flex items-start gap-3 rounded-xl border bg-white p-4 shadow-sm",
-        "transition-all duration-200 hover:shadow-md",
-        task.completed ? "border-gray-100 opacity-60" : "border-gray-200",
-      ].join(" ")}
+    <Card
+      elevation={0}
+      sx={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 2,
+        p: 2,
+        borderRadius: "12px",
+        border: "1px solid",
+        borderColor: task.completed ? "#f3f4f6" : "#e5e7eb",
+        bgcolor: "white",
+        transition: "all 0.2s ease",
+        opacity: task.completed ? 0.6 : 1,
+        "&:hover": {
+          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+        },
+      }}
     >
-      {/* Checkbox */}
-      <button
-        type="button"
-        aria-label={task.completed ? "Mark as active" : "Mark as completed"}
+      <Box
+        component="button"
         disabled={isPending}
         onClick={() => toggleStatus(task)}
-        className={[
-          "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border-2",
-          "transition-colors duration-150 cursor-pointer",
-          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500",
-          "disabled:cursor-not-allowed disabled:opacity-50",
-          task.completed
-            ? "border-emerald-500 bg-emerald-500 hover:bg-emerald-400 hover:border-emerald-400"
-            : "border-gray-300 bg-transparent hover:border-emerald-400",
-        ].join(" ")}
+        sx={{
+          mt: 0.5,
+          width: 18,
+          height: 18,
+          borderRadius: "50%",
+          border: "2px solid",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          transition: "all 0.15s",
+          bgcolor: task.completed ? "#10b981" : "transparent",
+          borderColor: task.completed ? "#10b981" : "#d1d5db",
+          "&:hover": {
+            borderColor: "#10b981",
+          },
+          "&:disabled": {
+            opacity: 0.5,
+            cursor: "not-allowed",
+          },
+        }}
       >
-        {task.completed && (
-          <svg
-            viewBox="0 0 10 8"
-            className="size-2.5 text-white"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M1 4l2.5 2.5L9 1" />
-          </svg>
-        )}
-      </button>
+      </Box>
 
-      {/* Content */}
-      <div className="min-w-0 flex-1">
-        <p
-          className={[
-            "text-sm font-medium leading-snug transition-colors duration-150",
-            task.completed ? "text-gray-400 line-through" : "text-gray-900",
-          ].join(" ")}
+      <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+        <Typography
+          sx={{
+            fontSize: "14px",
+            fontWeight: 500,
+            lineHeight: 1.4,
+            color: task.completed ? "#9ca3af" : "#111827",
+            textDecoration: task.completed ? "line-through" : "none",
+            transition: "color 0.15s",
+          }}
         >
           {task.title}
-        </p>
+        </Typography>
 
-        <div className="mt-2 flex items-center gap-2">
-          <span
-            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${badgeClass}`}
+        <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 1.5 }}>
+          <Box
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 1,
+              px: 1,
+              py: 0.25,
+              borderRadius: "9999px",
+              bgcolor: bg,
+              color: text,
+              fontSize: "12px",
+              fontWeight: 500,
+            }}
           >
-            <span className={`size-1.5 rounded-full ${dotClass}`} />
+            <Box
+              sx={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                bgcolor: dot,
+              }}
+            />
             {label}
-          </span>
+          </Box>
 
           {task.completed && (
-            <span className="text-xs text-gray-400">Done</span>
+            <Typography sx={{ fontSize: "12px", color: "#9ca3af" }}>
+              Done
+            </Typography>
           )}
-        </div>
-      </div>
+        </Stack>
+      </Box>
 
-      {/* Task ID */}
-      <span className="shrink-0 font-mono text-xs text-gray-300">
+      <Typography
+        sx={{
+          fontFamily: "monospace",
+          fontSize: "12px",
+          color: "#d1d5db", // gray-300
+          userSelect: "none",
+        }}
+      >
         #{task.id}
-      </span>
-    </article>
+      </Typography>
+    </Card>
   );
 };
