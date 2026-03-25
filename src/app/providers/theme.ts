@@ -7,6 +7,15 @@ export const theme = createTheme({
     },
     background: {
       default: "#f9fafb",
+      paper: "#ffffff",
+    },
+    text: {
+      primary: "#111827",
+      secondary: "#6b7280",
+    },
+    grey: {
+      100: "#f3f4f6",
+      200: "#e5e7eb",
     },
   },
   shape: {
@@ -16,8 +25,15 @@ export const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: 'none',
+          textTransform: "none",
           fontWeight: 600,
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: "none",
         },
       },
     },
