@@ -6,33 +6,47 @@ interface TaskCardProps {
   task: Task;
 }
 
-const priorityConfig: Record<
-  Priority,
-  { label: string; bg: string; text: string; dot: string }
-> = {
-  low: {
-    label: "Low",
-    bg: "#ecfdf5",
-    text: "#047857",
-    dot: "#34d399",
-  },
-  medium: {
-    label: "Medium",
-    bg: "#fffbeb",
-    text: "#b45309",
-    dot: "#fbbf24",
-  },
-  high: {
-    label: "High",
-    bg: "#fef2f2",
-    text: "#b91c1c",
-    dot: "#f87171",
-  },
+const priorityLabels: Record<Priority, string> = {
+  low: "Low",
+  medium: "Medium",
+  high: "High",
+};
+
+const getPrioritySx = (priority: Priority) => {
+  switch (priority) {
+    case "low":
+      return {
+        bgcolor: "#ecfdf5",
+        color: "#047857",
+        dotColor: "#34d399",
+      };
+
+    case "medium":
+      return {
+        bgcolor: "#fffbeb",
+        color: "#b45309",
+        dotColor: "#fbbf24",
+      };
+
+    case "high":
+      return {
+        bgcolor: "#fef2f2",
+        color: "#b91c1c",
+        dotColor: "#f87171",
+      };
+
+    default:
+      return {
+        bgcolor: "grey.100",
+        color: "text.secondary",
+        dotColor: "grey.400",
+      };
+  }
 };
 
 export const TaskCard = ({ task }: TaskCardProps) => {
-  const { label, bg, text, dot } = priorityConfig[task.priority];
   const { mutate: toggleStatus, isPending } = useToggleTaskStatus();
+  const priorityStyles = getPrioritySx(task.priority);
 
   return (
     <Card
@@ -42,12 +56,12 @@ export const TaskCard = ({ task }: TaskCardProps) => {
         alignItems: "flex-start",
         gap: 2,
         p: 2,
-        borderRadius: "12px",
         border: "1px solid",
-        borderColor: task.completed ? "#f3f4f6" : "#e5e7eb",
-        bgcolor: "white",
-        transition: "all 0.2s ease",
-        opacity: task.completed ? 0.6 : 1,
+        borderColor: "divider",
+        borderRadius: "12px",
+        bgcolor: "background.paper",
+        opacity: task.completed ? 0.7 : 1,
+        transition: "box-shadow 0.2s ease, opacity 0.2s ease",
         "&:hover": {
           boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
         },
@@ -55,41 +69,39 @@ export const TaskCard = ({ task }: TaskCardProps) => {
     >
       <Box
         component="button"
+        type="button"
         disabled={isPending}
         onClick={() => toggleStatus(task)}
         sx={{
           mt: 0.5,
           width: 18,
           height: 18,
+          p: 0,
           borderRadius: "50%",
           border: "2px solid",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          borderColor: task.completed ? "success.main" : "divider",
+          bgcolor: task.completed ? "success.main" : "transparent",
           cursor: "pointer",
-          transition: "all 0.15s",
-          bgcolor: task.completed ? "#10b981" : "transparent",
-          borderColor: task.completed ? "#10b981" : "#d1d5db",
+          flexShrink: 0,
+          transition: "border-color 0.15s ease, background-color 0.15s ease",
           "&:hover": {
-            borderColor: "#10b981",
+            borderColor: "success.main",
           },
           "&:disabled": {
             opacity: 0.5,
             cursor: "not-allowed",
           },
         }}
-      >
-      </Box>
+      />
 
       <Box sx={{ flexGrow: 1, minWidth: 0 }}>
         <Typography
           sx={{
-            fontSize: "14px",
+            fontSize: 14,
             fontWeight: 500,
             lineHeight: 1.4,
-            color: task.completed ? "#9ca3af" : "#111827",
+            color: task.completed ? "text.secondary" : "text.primary",
             textDecoration: task.completed ? "line-through" : "none",
-            transition: "color 0.15s",
           }}
         >
           {task.title}
@@ -103,9 +115,9 @@ export const TaskCard = ({ task }: TaskCardProps) => {
               gap: 1,
               px: 1,
               py: 0.25,
-              borderRadius: "9999px",
-              bgcolor: bg,
-              color: text,
+              borderRadius: 999,
+              bgcolor: priorityStyles.bgcolor,
+              color: priorityStyles.color,
               fontSize: "12px",
               fontWeight: 500,
             }}
@@ -115,14 +127,14 @@ export const TaskCard = ({ task }: TaskCardProps) => {
                 width: 6,
                 height: 6,
                 borderRadius: "50%",
-                bgcolor: dot,
+                bgcolor: priorityStyles.dotColor,
               }}
             />
-            {label}
+            {priorityLabels[task.priority]}
           </Box>
 
           {task.completed && (
-            <Typography sx={{ fontSize: "12px", color: "#9ca3af" }}>
+            <Typography sx={{ fontSize: 12, color: "text.secondary" }}>
               Done
             </Typography>
           )}
@@ -132,8 +144,8 @@ export const TaskCard = ({ task }: TaskCardProps) => {
       <Typography
         sx={{
           fontFamily: "monospace",
-          fontSize: "12px",
-          color: "#d1d5db", // gray-300
+          fontSize: 12,
+          color: "text.disabled",
           userSelect: "none",
         }}
       >
