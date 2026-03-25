@@ -7,12 +7,14 @@ import { TaskSkeleton } from "./TaskSkeleton";
 import type { Task } from "@/entities/task";
 import type { FilterValue } from "@/features/filter-tasks";
 
-const applyFilter = (tasks: Task[], filter: FilterValue): Task[] => {
+const applyFilter = (tasks: Task[], filter: FilterValue) => {
   switch (filter) {
     case "active":
-      return tasks.filter((t) => !t.completed);
+      return tasks.filter((task) => !task.completed);
+
     case "completed":
-      return tasks.filter((t) => t.completed);
+      return tasks.filter((task) => task.completed);
+
     default:
       return tasks;
   }
@@ -22,10 +24,9 @@ export const TaskList = () => {
   const { data: tasks, isLoading, isError, error } = useTasks();
   const filter = useAtomValue(filterAtom);
 
-  const filteredTasks = useMemo(
-    () => applyFilter(tasks ?? [], filter),
-    [tasks, filter],
-  );
+  const filteredTasks = useMemo(() => {
+    return applyFilter(tasks ?? [], filter);
+  }, [tasks, filter]);
 
   if (isLoading) {
     return <TaskSkeleton count={6} />;
@@ -36,7 +37,10 @@ export const TaskList = () => {
       <Alert
         severity="error"
         variant="outlined"
-        sx={{ borderRadius: "12px", bgcolor: "#fef2f2" }}
+        sx={{
+          borderRadius: 3,
+          bgcolor: "error.lighter",
+        }}
       >
         <AlertTitle>Failed to load tasks</AlertTitle>
         {error?.message ?? "Unknown error"}
@@ -50,9 +54,9 @@ export const TaskList = () => {
         sx={{
           p: 8,
           textAlign: "center",
-          borderRadius: "12px",
           border: "1px dashed",
           borderColor: "divider",
+          borderRadius: 3,
           bgcolor: "background.default",
         }}
       >
