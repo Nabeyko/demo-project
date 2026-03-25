@@ -33,7 +33,7 @@ export const CreateTaskForm = () => {
     control,
     reset,
     formState: { errors },
-  } = useForm<CreateTaskDto>({
+  } = useForm({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
       title: "",
