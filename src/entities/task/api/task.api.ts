@@ -1,5 +1,4 @@
 import { apiClient } from "@/shared/api";
-
 export interface RawTask {
   userId: number;
   id: number;
@@ -9,18 +8,20 @@ export interface RawTask {
 
 export const taskApi = {
   getAll: (): Promise<RawTask[]> =>
-    apiClient.get<RawTask[]>("/todos").then((r) => r.data),
+    apiClient.get<RawTask[]>("/todos").then((response) => response.data),
 
   getById: (id: number): Promise<RawTask> =>
-    apiClient.get<RawTask>(`/todos/${id}`).then((r) => r.data),
+    apiClient.get<RawTask>(`/todos/${id}`).then((response) => response.data),
 
-  create: (dto: Pick<RawTask, "title" | "completed">): Promise<RawTask> =>
+  create: (
+    dto: Pick<RawTask, "title" | "completed">,
+  ): Promise<RawTask> =>
     apiClient
       .post<RawTask>("/todos", { ...dto, userId: 1 })
-      .then((r) => r.data),
+      .then((response) => response.data),
 
   toggle: (id: number, completed: boolean): Promise<RawTask> =>
     apiClient
       .patch<RawTask>(`/todos/${id}`, { completed })
-      .then((r) => r.data),
+      .then((response) => response.data),
 };

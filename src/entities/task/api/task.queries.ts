@@ -15,8 +15,8 @@ export const useToggleTaskStatus = () => {
       const previousTasks = queryClient.getQueryData<Task[]>(taskKeys.all);
 
       queryClient.setQueryData<Task[]>(taskKeys.all, (prev) =>
-        prev?.map((t) =>
-          t.id === task.id ? { ...t, completed: !t.completed } : t,
+        prev?.map((taskItem) =>
+          taskItem.id === task.id ? { ...taskItem, completed: !taskItem.completed } : taskItem,
         ),
       );
 
@@ -24,8 +24,8 @@ export const useToggleTaskStatus = () => {
     },
 
     onError: (_err, _task, context) => {
-      if (context?.previousTasks !== undefined) {
-        queryClient.setQueryData<Task[]>(taskKeys.all, context.previousTasks);
+      if (context?.previousTasks) {
+        queryClient.setQueryData(taskKeys.all, context.previousTasks);
       }
     },
   });
