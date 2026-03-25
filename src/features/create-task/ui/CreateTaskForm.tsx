@@ -85,29 +85,30 @@ export const CreateTaskForm = () => {
                 exclusive
                 onChange={(_, newValue) => newValue && field.onChange(newValue)}
                 sx={{
-                  bgcolor: "#f3f4f6", 
-                  p: "4px", 
+                  bgcolor: "grey.100",
+                  p: "4px",
                   borderRadius: "10px",
                   height: "40px",
                   border: "none",
                   "& .MuiToggleButton-root": {
-                    border: "none",
-                    borderRadius: "8px !important",
+                    border: 0,
+                    borderRadius: "8px",
                     textTransform: "none",
                     fontWeight: 500,
                     fontSize: "14px",
-                    color: "#6b7280",
+                    color: "text.secondary",
+                    px: 2,
                     "&.Mui-selected": {
-                      bgcolor: "white",
-                      color: "#2563eb",
-                      boxShadow: "0 1px 2px rgba(0,0,0,0.05)" 
-                    }
-                  }
+                      bgcolor: "background.paper",
+                      color: "primary.main",
+                      boxShadow: 1,
+                    },
+                  },
                 }}
               >
-                {PRIORITY_OPTIONS.map(({ value, label }) => (
-                  <ToggleButton key={value} value={value} sx={{ px: 2 }}>
-                    {label}
+                {PRIORITY_OPTIONS.map((option) => (
+                  <ToggleButton key={option.value} value={option.value}>
+                    {option.label}
                   </ToggleButton>
                 ))}
               </ToggleButtonGroup>
